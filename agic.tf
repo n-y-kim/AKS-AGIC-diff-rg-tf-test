@@ -1,10 +1,10 @@
-resource "azurerm_public_ip" "ag-pip" {
-  name                = "ag-pip"
-  resource_group_name = azurerm_resource_group.k8s-rg.name
-  location            = azurerm_resource_group.k8s-rg.location
-  allocation_method   = "Static"
-  sku = "Standard"
-}
+# resource "azurerm_public_ip" "ag-pip" {
+#   name                = "ag-pip"
+#   resource_group_name = azurerm_resource_group.k8s-rg.name
+#   location            = azurerm_resource_group.k8s-rg.location
+#   allocation_method   = "Static"
+#   sku = "Standard"
+# }
 
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
@@ -18,27 +18,9 @@ locals {
   redirect_configuration_name    = "${azurerm_virtual_network.k8s-vnet.name}-rdrcfg"
 }
 
-resource "azurerm_user_assigned_identity" "agic_identity" {
-  name                = "agic-identity"
-  location = azurerm_resource_group.k8s-rg.location
-  resource_group_name = azurerm_resource_group.k8s-rg.name
-}
-
-resource "azurerm_role_assignment" "assign_contributor_agic" {
-  scope                = azurerm_application_gateway.network.id
-  role_definition_name = "Contributor"
-  principal_id         = azurerm_user_assigned_identity.agic_identity.principal_id
-}
-
-resource "azurerm_role_assignment" "assign_reader_appgw_rg" {
-  scope                = azurerm_resource_group.k8s-rg.id
-  role_definition_name = "Reader"
-  principal_id         = azurerm_user_assigned_identity.agic_identity.principal_id
-}
-
 resource "azurerm_application_gateway" "network" {
   name                = "example-appgateway"
-  resource_group_name = azurerm_resource_group.k8s-rg.name
+  resource_group_name = azurerm_resource_group.appgw-rg.name
   location            = azurerm_resource_group.k8s-rg.location
 
   sku {
@@ -57,10 +39,10 @@ resource "azurerm_application_gateway" "network" {
     port = 80
   }
 
-  identity {
-    type = "UserAssigned"
-    identity_ids  = [azurerm_user_assigned_identity.agic_identity.id]
-  }
+  # identity {
+  #   type = "UserAssigned"
+  #   identity_ids  = [azurerm_user_assigned_identity.agic_identity.id]
+  # }
 
   # frontend_ip_configuration {
   #   name                 = local.frontend_public_ip_configuration_name

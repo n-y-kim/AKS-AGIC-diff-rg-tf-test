@@ -12,9 +12,12 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     vnet_subnet_id = azurerm_subnet.node-subnet.id
     pod_subnet_id = azurerm_subnet.pod-subnet.id
   }
-  service_principal {
-    client_id = var.client_id
-    client_secret = var.client_secret
+  # service_principal {
+  #   client_id = var.client_id
+  #   client_secret = var.client_secret
+  # }
+  identity {
+    type = "SystemAssigned"
   }
 
   ingress_application_gateway {

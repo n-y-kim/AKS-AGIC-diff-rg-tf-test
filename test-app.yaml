@@ -56,25 +56,25 @@ spec:
               number: 80
         pathType: Exact
 
----
+# ---
 
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: aspnetapp-public
-  annotations:
-    appgw.ingress.kubernetes.io/use-private-ip: "false"
-  #   kubernetes.io/ingress.class: azure/application-gateway
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: aspnetapp-public
+#   annotations:
+#     appgw.ingress.kubernetes.io/use-private-ip: "false"
+#   #   kubernetes.io/ingress.class: azure/application-gateway
   
-spec:
-  ingressClassName: azure-application-gateway
-  rules:
-  - http:
-      paths:
-      - path: /
-        backend:
-          service:
-            name: aspnetapp
-            port:
-              number: 80
-        pathType: Exact
+# spec:
+#   ingressClassName: azure-application-gateway
+#   rules:
+#   - http:
+#       paths:
+#       - path: /
+#         backend:
+#           service:
+#             name: aspnetapp
+#             port:
+#               number: 80
+#         pathType: Exact
