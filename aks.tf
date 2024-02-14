@@ -1,7 +1,9 @@
 resource "azurerm_kubernetes_cluster" "k8s" {
-  name = var.cluster_name
-  location = azurerm_resource_group.k8s-rg.location
-  resource_group_name = azurerm_resource_group.k8s-rg.name
+  count               = var.resource_count
+  name                = "aks-${count.index}"
+  resource_group_name = azurerm_resource_group.k8s-rg[count.index].name
+  location            = azurerm_resource_group.k8s-rg[count.index].location
+
   dns_prefix = var.dns_prefix
   kubernetes_version = "1.27.7"
   
@@ -9,8 +11,8 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     name = "default"
     node_count = var.agent_count
     vm_size = "Standard_D2_v2"
-    vnet_subnet_id = azurerm_subnet.node-subnet.id
-    pod_subnet_id = azurerm_subnet.pod-subnet.id
+    vnet_subnet_id = azurerm_subnet.node-subnet[count.index].id
+    pod_subnet_id = azurerm_subnet.pod-subnet[count.index].id
   }
   # service_principal {
   #   client_id = var.client_id
@@ -21,7 +23,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 
   ingress_application_gateway {
-    gateway_id = azurerm_application_gateway.network.id
+    gateway_id = azurerm_application_gateway.network[count.index].id
   }
 
   network_profile {
